@@ -1,0 +1,194 @@
+{
+  "name": "Magic",
+  "prefix": "magic",
+  "uri": "http://magic",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "LinkedEvent",
+      "extends": [
+        "bpmn:Event"
+      ],
+      "properties": [
+        {
+          "name": "linkedSupEventId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "linkedInfEventId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "DataAssociationName",
+      "extends": [
+        "bpmn:DataOutputAssociation", "bpmn:DataInputAssociation"
+      ],
+      "properties": [
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "LinkedDataRef",
+      "extends":[
+        "bpmn:DataStoreReference", "bpmn:DataObjectReference"
+      ],
+      "properties":[
+        {
+          "name":"linkedSupDataId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name":"linkedInfDataId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "DataExpression",
+      "extends":[
+        "bpmn:DataOutputAssociation", "bpmn:DataInputAssociation"
+      ],
+      "properties":[
+        {
+          "name":"expression",
+          "isAttr":true,
+          "type":"String"
+        }
+      ]
+    },
+    {
+      "name": "Types",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "values",
+          "isMany": true,
+          "type": "Type"
+        }
+      ]
+    },
+    {
+      "name": "Type",
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "subType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "extensions",
+          "type": "Extensions"
+        },
+        {
+          "name": "key",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "record",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Parameters",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "values",
+          "isMany": true,
+          "type": "Parameter"
+        }
+      ]
+    },
+    {
+      "name": "Parameter",
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "extensions",
+          "type": "Extensions"
+        }
+      ]
+    },
+    {
+      "name": "Extensions",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "extensions",
+          "isMany": true,
+          "type": "Extension"
+        }
+      ]
+    },
+    {
+      "name": "Extension",
+      "properties": [
+        {
+          "name": "key",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}
