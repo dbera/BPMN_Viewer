@@ -2,17 +2,17 @@ import { without } from 'min-dash';
 
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 
-import { 
+import {
   CollapsibleEntry,
-  ListEntry 
+  ListEntry
 } from '@bpmn-io/properties-panel';
 
 import { useService } from 'bpmn-js-properties-panel';
 
 import ExtensionProps from './ExtensionProps';
 
-import { 
-  createElement 
+import {
+  createElement
 } from '../util';
 
 
@@ -23,7 +23,7 @@ export default function ExtensionList(props) {
     type
   } = props;
 
-  const id = `${ idPrefix }-extensions`;
+  const id = `${idPrefix}-extensions`;
 
   const bpmnFactory = useService('bpmnFactory');
   const commandStack = useService('commandStack');
@@ -42,7 +42,7 @@ export default function ExtensionList(props) {
     if (!extensions) {
       extensions = createElement(
         'magic:Extensions',
-        { },
+        {},
         businessObject,
         bpmnFactory
       );
@@ -60,7 +60,7 @@ export default function ExtensionList(props) {
     // (2) add extension
     const extension = createElement(
       'magic:Extension',
-      { key: undefined },
+      { key: undefined, parentType: type.name },
       extensions,
       bpmnFactory
     );
@@ -71,7 +71,7 @@ export default function ExtensionList(props) {
         element,
         moddleElement: extensions,
         properties: {
-          extensions: [ ...extensions.get('extensions'), extension ]
+          extensions: [...extensions.get('extensions'), extension]
         }
       }
     });
@@ -91,14 +91,14 @@ export default function ExtensionList(props) {
   }
 
   return <ListEntry
-    element={ element }
-    autoFocusEntry={ `[data-entry-id="${id}-extension-${extensionsList.length - 1}"] input` }
-    id={ id }
-    label={ translate('Extensions') }
-    items={ extensionsList }
-    component={ Extension }
-    onAdd={ addExtension }
-    onRemove={ removeExtension } />;
+    element={element}
+    autoFocusEntry={`[data-entry-id="${id}-extension-${extensionsList.length - 1}"] input`}
+    id={id}
+    label={translate('Extensions')}
+    items={extensionsList}
+    component={Extension}
+    onAdd={addExtension}
+    onRemove={removeExtension} />;
 }
 
 function Extension(props) {
@@ -107,24 +107,26 @@ function Extension(props) {
     id: idPrefix,
     index,
     item: extension,
-    open
+    open,
+    type
   } = props;
 
   const translate = useService('translate');
 
-  const id = `${ idPrefix }-extension-${ index }`;
+  const id = `${idPrefix}-extension-${index}`;
 
   return (
     <CollapsibleEntry
-      id={ id }
-      element={ element }
-      entries={ ExtensionProps({
+      id={id}
+      element={element}
+      entries={ExtensionProps({
         extension,
         element,
-        idPrefix: id
-      }) }
-      label={ extension.get('key') || translate('<empty>') }
-      open={ open }
+        idPrefix: id,
+        type
+      })}
+      label={extension.get('key') || translate('<empty>')}
+      open={open}
     />
   );
 }

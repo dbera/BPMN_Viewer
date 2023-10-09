@@ -1,10 +1,10 @@
 // Import your custom property entries.
 // The entry is a text input field with logic attached to create,
 // update and delete the "spell" property.
-import spellProps from './parts/SpellProps';
 import guardProps from './parts/GuardProps';
 import parametersProps from './parts/ParametersProps';
 import typesProps from './parts/TypesProps';
+import stepProps from './parts/StepProps';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 // Import the properties panel list group component.
 import { ListGroup } from '@bpmn-io/properties-panel';
@@ -30,7 +30,7 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
    *
    * @return {(Object[]) => (Object[])} groups middleware
    */
-  this.getGroups = function(element) {
+  this.getGroups = function (element) {
 
     /**
      * We return a middleware that modifies
@@ -40,22 +40,26 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
      *
      * @return {Object[]} modified groups
      */
-    return function(groups) {
+    return function (groups) {
 
       // Add the "magic" group
-      if(is(element, 'bpmn:DataStoreReference')) {
+      if (is(element, 'bpmn:DataStoreReference')) {
         groups.push(createTypesGroup(element, injector, translate));
       }
 
-      if(is(element, 'bpmn:DataOutputAssociation')) {
+      if (is(element, 'bpmn:DataOutputAssociation')) {
         groups.push(createExtensionGroup(element, translate));
       }
 
-      if(is(element, 'bpmn:DataInputAssociation')) {
+      if (is(element, 'bpmn:DataInputAssociation')) {
         groups.push(createExtensionGroup(element, translate));
       }
-      if(is(element, 'bpmn:DataObjectReference')){
+      if (is(element, 'bpmn:DataObjectReference')) {
         groups.push(createParametersGroup(element, injector, translate));
+      }
+
+      if (is(element, 'bpmn:Task')) {
+        groups.push(createStepGroup(element, injector, translate));
       }
 
       return groups;
@@ -71,21 +75,9 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
   propertiesPanel.registerProvider(LOW_PRIORITY, this);
 }
 
-MagicPropertiesProvider.$inject = [ 'propertiesPanel', 'injector', 'translate' ];
+MagicPropertiesProvider.$inject = ['propertiesPanel', 'injector', 'translate'];
 
-// Create the custom magic group
-function createMagicGroup(element, translate) {
-
-  // create a group called "Magic properties".
-  const magicGroup = {
-    id: 'magic',
-    label: translate('Magic properties'),
-    entries: spellProps(element)
-  };
-
-  return magicGroup
-}
-
+// Create the custom Extension group
 function createExtensionGroup(element, translate) {
   const extensionGroup = {
     id: 'extension',
@@ -119,4 +111,15 @@ function createTypesGroup(element, injector, translate) {
   };
 
   return typesGroup;
+}
+
+//create the custom step schema group.
+function createStepGroup(element, injector, translate) {
+  const stepGroup = {
+    id: 'step',
+    label: translate('Step properties'),
+    entries: stepProps({ element, injector, translate })
+  };
+
+  return stepGroup;
 }

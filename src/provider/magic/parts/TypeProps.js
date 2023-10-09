@@ -11,7 +11,7 @@ export default function TypeProps(props) {
     type
   } = props;
 
-  const entries = [ 
+  const entries = [
     {
       id: idPrefix + '-name',
       component: Name,
@@ -27,28 +27,28 @@ export default function TypeProps(props) {
     }
   ];
 
-  if(type.type === 'Record'){
+  if (type.type === 'Record') {
     entries.push({
-        id: idPrefix + '-extensions',
-        component: ExtensionList,
-        idPrefix,
-        type
+      id: idPrefix + '-extensions',
+      component: ExtensionList,
+      idPrefix,
+      type
     });
   }
 
-  if(type.type === 'List' || type.type === 'Set'){
+  if (type.type === 'List' || type.type === 'Set') {
     type.key = '';
     type.value = '';
     entries.push({
-        id: idPrefix + '-subType',
-        component: SubType,
-        idPrefix,
-        type,
-        isEdited: isSelectEntryEdited
+      id: idPrefix + '-subType',
+      component: SubType,
+      idPrefix,
+      type,
+      isEdited: isSelectEntryEdited
     });
   }
 
-  if(type.type === 'Map'){
+  if (type.type === 'Map') {
     type.subType = '';
     entries.push({
       id: idPrefix + '-key',
@@ -57,15 +57,15 @@ export default function TypeProps(props) {
       type,
       isEdited: isSelectEntryEdited
     },
-    {
-      id: idPrefix + '-value',
-      component: Value,
-      idPrefix,
-      type,
-      isEdited: isSelectEntryEdited
-    });
+      {
+        id: idPrefix + '-value',
+        component: Value,
+        idPrefix,
+        type,
+        isEdited: isSelectEntryEdited
+      });
   }
-  if(type.subType === 'Record'){
+  if (type.subType === 'Record') {
     entries.push({
       id: idPrefix + '-record',
       component: Record,
@@ -73,6 +73,7 @@ export default function TypeProps(props) {
       type,
       isEdited: isSelectEntryEdited
     });
+
   }
   return entries;
 }
@@ -125,11 +126,11 @@ function Type(props) {
 
   const setValue = (value) => {
     commandStack.execute('element.updateModdleProperties', {
-        element,
-        moddleElement: type,
-        properties: {
-          type: value
-        }
+      element,
+      moddleElement: type,
+      properties: {
+        type: value
+      }
     });
   };
 
@@ -137,13 +138,13 @@ function Type(props) {
     return type.type;
   };
 
-  const [ types, setTypes ] = useState([]);
+  const [types, setTypes] = useState([]);
   useEffect(() => {
-    function fetchTypes(){
-        setTypes(['Record', 'List', 'Set', 'Map', 'String', 'Int', 'Boolean', 'Float']);
+    function fetchTypes() {
+      setTypes(['Record', 'List', 'Set', 'Map', 'String', 'Int', 'Boolean', 'Float']);
     }
     fetchTypes();
-  }, [ setTypes ]);
+  }, [setTypes]);
 
   const getOptions = () => {
     return [
@@ -156,246 +157,246 @@ function Type(props) {
   }
 
   return <SelectEntry
-    id={ idPrefix + '-type' }
-    element={ type }
-    description={ translate('Select a type') }
-    label={ translate('Type') }
-    getValue={ getValue }
-    setValue={ setValue }
-    getOptions={ getOptions }
-    debounce={ debounce }
+    id={idPrefix + '-type'}
+    element={type}
+    description={translate('Select a type')}
+    label={translate('Type')}
+    getValue={getValue}
+    setValue={setValue}
+    getOptions={getOptions}
+    debounce={debounce}
   />
 }
 
 function SubType(props) {
-    const {
-      idPrefix,
-      element,
-      type
-    } = props;
-  
-    const commandStack = useService('commandStack');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
-  
-    const setValue = (value) => {
-      commandStack.execute('element.updateModdleProperties', {
-          element,
-          moddleElement: type,
-          properties: {
-            subType: value
-          }
-      });
-    };
-  
-    const getValue = (type) => {
-      return type.subType;
-    };
-  
-    const [ subtypes, setSubTypes ] = useState([]);
-    useEffect(() => {
-      function fetchTypes(){
-          setSubTypes(['Record', 'String', 'Int', 'Boolean', 'Float']);
-      }
-      fetchTypes();
-    }, [ setSubTypes ]);
-  
-    const getOptions = () => {
-      return [
-        { label: '<none>', value: undefined },
-        ...subtypes.map(subType => ({
-          label: subType,
-          value: subType
-        }))
-      ];
-    }
-  
-    return <SelectEntry
-      id={ idPrefix + '-type' }
-      element={ type }
-      description={ translate('Select a subtype') }
-      label={ translate('Subtype') }
-      getValue={ getValue }
-      setValue={ setValue }
-      getOptions={ getOptions }
-      debounce={ debounce }
-    />
-  }
+  const {
+    idPrefix,
+    element,
+    type
+  } = props;
 
-  function Key(props) {
-    const {
-      idPrefix,
-      element,
-      type
-    } = props;
-  
-    const commandStack = useService('commandStack');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
-  
-    const setValue = (value) => {
-      commandStack.execute('element.updateModdleProperties', {
-          element,
-          moddleElement: type,
-          properties: {
-            key: value
-          }
-      });
-    };
-  
-    const getValue = (type) => {
-      return type.key;
-    };
-  
-    const [ keys, setKeys ] = useState([]);
-    useEffect(() => {
-      function fetchKeys(){
-        setKeys(['String', 'Int']);
-      }
-      fetchKeys();
-    }, [ setKeys ]);
-  
-    const getOptions = () => {
-      return [
-        { label: '<none>', value: undefined },
-        ...keys.map(key => ({
-          label: key,
-          value: key
-        }))
-      ];
-    }
-  
-    return <SelectEntry
-      id={ idPrefix + '-key' }
-      element={ type }
-      description={ translate('Select a type for the key') }
-      label={ translate('Key') }
-      getValue={ getValue }
-      setValue={ setValue }
-      getOptions={ getOptions }
-      debounce={ debounce }
-    />
-  }
+  const commandStack = useService('commandStack');
+  const translate = useService('translate');
+  const debounce = useService('debounceInput');
 
-  function Value(props) {
-    const {
-      idPrefix,
+  const setValue = (value) => {
+    commandStack.execute('element.updateModdleProperties', {
       element,
-      type
-    } = props;
-  
-    const commandStack = useService('commandStack');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
-  
-    const setValue = (val) => {
-      commandStack.execute('element.updateModdleProperties', {
-          element,
-          moddleElement: type,
-          properties: {
-            value: val
-          }
-      });
-    };
-  
-    const getValue = (type) => {
-      return type.value;
-    };
-  
-    const [ values, setValues ] = useState([]);
-    useEffect(() => {
-      function fetchValues(){
-        setValues(['Record', 'String', 'Int', 'Boolean', 'Float']);
+      moddleElement: type,
+      properties: {
+        subType: value
       }
-      fetchValues();
-    }, [ setValues ]);
-  
-    const getOptions = () => {
-      return [
-        { label: '<none>', value: undefined },
-        ...values.map(val => ({
-          label: val,
-          value: val
-        }))
-      ];
-    }
-  
-    return <SelectEntry
-      id={ idPrefix + '-value' }
-      element={ type }
-      description={ translate('Select a type for the value') }
-      label={ translate('Value') }
-      getValue={ getValue }
-      setValue={ setValue }
-      getOptions={ getOptions }
-      debounce={ debounce }
-    />
-  }
-
-  function Record(props) {
-    const {
-      idPrefix,
-      element,
-      type
-    } = props;
-    const elementRegistry = useService('elementRegistry');
-    const commandStack = useService('commandStack');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
-  
-    const setValue = (val) => {
-      commandStack.execute('element.updateModdleProperties', {
-          element,
-          moddleElement: type,
-          properties: {
-            record: val
-          }
-      });
-    };
-  
-    const getValue = (type) => {
-      return type.record;
-    };
-    const schema = elementRegistry.filter(function(element) {
-      return element.businessObject.name === 'Schema' && 
-      is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
     });
-    const [ records, setRecords ] = useState([]);
-    useEffect(() => {
-      function fetchRecords(){
-        var recordTypes = [];
-        schema.forEach(function(data){
-          data.businessObject.extensionElements.values.forEach(function(extension){
-            extension.values.forEach(function(type){
-              if(type.type === 'Record'){
-                recordTypes.push(type.name);
-              }
-            });
-          })
-        });
-        setRecords(recordTypes);
-      }
-      fetchRecords();
-    }, [ setRecords ]);
-  
-    const getOptions = () => {
-      return [
-        { label: '<none>', value: undefined },
-        ...records.map(record => ({
-          label: record,
-          value: record
-        }))
-      ];
+  };
+
+  const getValue = (type) => {
+    return type.subType;
+  };
+
+  const [subtypes, setSubTypes] = useState([]);
+  useEffect(() => {
+    function fetchTypes() {
+      setSubTypes(['Record', 'String', 'Int', 'Boolean', 'Float']);
     }
-  
-    return <SelectEntry
-      id={ idPrefix + '-record' }
-      element={ type }
-      description={ translate('Select a record type') }
-      label={ translate('Record') }
-      getValue={ getValue }
-      setValue={ setValue }
-      getOptions={ getOptions }
-      debounce={ debounce }
-    />
+    fetchTypes();
+  }, [setSubTypes]);
+
+  const getOptions = () => {
+    return [
+      { label: '<none>', value: undefined },
+      ...subtypes.map(subType => ({
+        label: subType,
+        value: subType
+      }))
+    ];
   }
+
+  return <SelectEntry
+    id={idPrefix + '-type'}
+    element={type}
+    description={translate('Select a subtype')}
+    label={translate('Subtype')}
+    getValue={getValue}
+    setValue={setValue}
+    getOptions={getOptions}
+    debounce={debounce}
+  />
+}
+
+function Key(props) {
+  const {
+    idPrefix,
+    element,
+    type
+  } = props;
+
+  const commandStack = useService('commandStack');
+  const translate = useService('translate');
+  const debounce = useService('debounceInput');
+
+  const setValue = (value) => {
+    commandStack.execute('element.updateModdleProperties', {
+      element,
+      moddleElement: type,
+      properties: {
+        key: value
+      }
+    });
+  };
+
+  const getValue = (type) => {
+    return type.key;
+  };
+
+  const [keys, setKeys] = useState([]);
+  useEffect(() => {
+    function fetchKeys() {
+      setKeys(['String', 'Int']);
+    }
+    fetchKeys();
+  }, [setKeys]);
+
+  const getOptions = () => {
+    return [
+      { label: '<none>', value: undefined },
+      ...keys.map(key => ({
+        label: key,
+        value: key
+      }))
+    ];
+  }
+
+  return <SelectEntry
+    id={idPrefix + '-key'}
+    element={type}
+    description={translate('Select a type for the key')}
+    label={translate('Key')}
+    getValue={getValue}
+    setValue={setValue}
+    getOptions={getOptions}
+    debounce={debounce}
+  />
+}
+
+function Value(props) {
+  const {
+    idPrefix,
+    element,
+    type
+  } = props;
+
+  const commandStack = useService('commandStack');
+  const translate = useService('translate');
+  const debounce = useService('debounceInput');
+
+  const setValue = (val) => {
+    commandStack.execute('element.updateModdleProperties', {
+      element,
+      moddleElement: type,
+      properties: {
+        value: val
+      }
+    });
+  };
+
+  const getValue = (type) => {
+    return type.value;
+  };
+
+  const [values, setValues] = useState([]);
+  useEffect(() => {
+    function fetchValues() {
+      setValues(['Record', 'String', 'Int', 'Boolean', 'Float']);
+    }
+    fetchValues();
+  }, [setValues]);
+
+  const getOptions = () => {
+    return [
+      { label: '<none>', value: undefined },
+      ...values.map(val => ({
+        label: val,
+        value: val
+      }))
+    ];
+  }
+
+  return <SelectEntry
+    id={idPrefix + '-value'}
+    element={type}
+    description={translate('Select a type for the value')}
+    label={translate('Value')}
+    getValue={getValue}
+    setValue={setValue}
+    getOptions={getOptions}
+    debounce={debounce}
+  />
+}
+
+function Record(props) {
+  const {
+    idPrefix,
+    element,
+    type
+  } = props;
+  const elementRegistry = useService('elementRegistry');
+  const commandStack = useService('commandStack');
+  const translate = useService('translate');
+  const debounce = useService('debounceInput');
+
+  const setValue = (val) => {
+    commandStack.execute('element.updateModdleProperties', {
+      element,
+      moddleElement: type,
+      properties: {
+        record: val
+      }
+    });
+  };
+
+  const getValue = (type) => {
+    return type.record;
+  };
+  const schema = elementRegistry.filter(function (element) {
+    return element.businessObject.name === 'Schema' &&
+      is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
+  });
+  const [records, setRecords] = useState([]);
+  useEffect(() => {
+    function fetchRecords() {
+      var recordTypes = [];
+      schema.forEach(function (data) {
+        data.businessObject.extensionElements.values.forEach(function (extension) {
+          extension.values.forEach(function (t) {
+            if (t.type === 'Record' && t.name !== type.record.name) {
+              recordTypes.push(t.name);
+            }
+          });
+        })
+      });
+      setRecords(recordTypes);
+    }
+    fetchRecords();
+  }, [setRecords]);
+
+  const getOptions = () => {
+    return [
+      { label: '<none>', value: undefined },
+      ...records.map(record => ({
+        label: record,
+        value: record
+      }))
+    ];
+  }
+
+  return <SelectEntry
+    id={idPrefix + '-record'}
+    element={type}
+    description={translate('Select a record type')}
+    label={translate('Record')}
+    getValue={getValue}
+    setValue={setValue}
+    getOptions={getOptions}
+    debounce={debounce}
+  />
+}

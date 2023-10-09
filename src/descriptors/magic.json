@@ -28,7 +28,8 @@
     {
       "name": "DataAssociationName",
       "extends": [
-        "bpmn:DataOutputAssociation", "bpmn:DataInputAssociation"
+        "bpmn:DataOutputAssociation",
+        "bpmn:DataInputAssociation"
       ],
       "properties": [
         {
@@ -40,17 +41,18 @@
     },
     {
       "name": "LinkedDataRef",
-      "extends":[
-        "bpmn:DataStoreReference", "bpmn:DataObjectReference"
+      "extends": [
+        "bpmn:DataStoreReference",
+        "bpmn:DataObjectReference"
       ],
-      "properties":[
+      "properties": [
         {
-          "name":"linkedSupDataId",
+          "name": "linkedSupDataId",
           "isAttr": true,
           "type": "String"
         },
         {
-          "name":"linkedInfDataId",
+          "name": "linkedInfDataId",
           "isAttr": true,
           "type": "String"
         }
@@ -58,20 +60,23 @@
     },
     {
       "name": "DataExpression",
-      "extends":[
-        "bpmn:DataOutputAssociation", "bpmn:DataInputAssociation"
+      "extends": [
+        "bpmn:DataOutputAssociation",
+        "bpmn:DataInputAssociation"
       ],
-      "properties":[
+      "properties": [
         {
-          "name":"expression",
-          "isAttr":true,
-          "type":"String"
+          "name": "expression",
+          "isAttr": true,
+          "type": "String"
         }
       ]
     },
     {
       "name": "Types",
-      "superClass": [ "Element" ],
+      "superClass": [
+        "Element"
+      ],
       "properties": [
         {
           "name": "values",
@@ -126,7 +131,9 @@
     },
     {
       "name": "Parameters",
-      "superClass": [ "Element" ],
+      "superClass": [
+        "Element"
+      ],
       "properties": [
         {
           "name": "values",
@@ -159,6 +166,11 @@
           "type": "String"
         },
         {
+          "name": "subType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "extensions",
           "type": "Extensions"
         }
@@ -166,7 +178,9 @@
     },
     {
       "name": "Extensions",
-      "superClass": [ "Element" ],
+      "superClass": [
+        "Element"
+      ],
       "properties": [
         {
           "name": "extensions",
@@ -185,6 +199,49 @@
         },
         {
           "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "subType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "record",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "parentType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "StepProperties",
+      "extends": [
+        "bpmn:Task"
+      ],
+      "properties": [
+        {
+          "name": "stepType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "stepInput",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "stepInputRef",
           "isAttr": true,
           "type": "String"
         }

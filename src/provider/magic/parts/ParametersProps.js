@@ -2,7 +2,7 @@ import {
   getBusinessObject
 } from 'bpmn-js/lib/util/ModelUtil';
 
-import { 
+import {
   createElement,
   createParameters,
   getParameters,
@@ -20,7 +20,7 @@ export default function ParametersProps({ element, injector }) {
   const parameters = getParameters(element) || [];
 
   const bpmnFactory = injector.get('bpmnFactory'),
-        commandStack = injector.get('commandStack');
+    commandStack = injector.get('commandStack');
 
   const items = parameters.map((parameter, index) => {
     const id = element.id + '-parameter-' + index;
@@ -45,7 +45,7 @@ export default function ParametersProps({ element, injector }) {
 }
 
 function removeFactory({ commandStack, element, parameter }) {
-  return function(event) {
+  return function (event) {
     event.stopPropagation();
 
     const extension = getParametersExtension(element);
@@ -67,7 +67,7 @@ function removeFactory({ commandStack, element, parameter }) {
 }
 
 function addFactory({ element, bpmnFactory, commandStack }) {
-  return function(event) {
+  return function (event) {
     event.stopPropagation();
 
     const commands = [];
@@ -109,7 +109,7 @@ function addFactory({ element, bpmnFactory, commandStack }) {
           element,
           moddleElement: extensionElements,
           properties: {
-            values: [ ...extensionElements.get('values'), extension ]
+            values: [...extensionElements.get('values'), extension]
           }
         }
       });
@@ -128,7 +128,7 @@ function addFactory({ element, bpmnFactory, commandStack }) {
         element,
         moddleElement: extension,
         properties: {
-          values: [ ...extension.get('values'), newParameter ]
+          values: [...extension.get('values'), newParameter]
         }
       }
     });

@@ -33,7 +33,7 @@
     "@bpmn-io/properties-panel": "^0.21.0",
     "bpmn-js": "^10.2.0",
     "bpmn-js-guideline-validator": "^0.1.0",
-    "bpmn-js-properties-panel": "^1.10.0",
+    "bpmn-js-properties-panel": "^1.26.0",
     "bpmn-moddle": "^0.3.0",
     "camunda-bpmn-js-behaviors": "^0.3.0",
     "cors": "^2.8.5",

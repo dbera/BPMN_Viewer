@@ -1,7 +1,6 @@
 import Ids from 'ids';
-
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
-
+import { is } from 'bpmn-js/lib/util/ModelUtil';
 export function getParametersExtension(element) {
   const businessObject = getBusinessObject(element);
   return getExtension(businessObject, 'magic:Parameters');
@@ -27,7 +26,7 @@ export function getExtension(element, type) {
     return null;
   }
 
-  return element.extensionElements.values.filter(function(e) {
+  return element.extensionElements.values.filter(function (e) {
     return e.$instanceOf(type);
   })[0];
 }
@@ -51,7 +50,18 @@ export function createTypes(properties, parent, bpmnFactory) {
 }
 
 export function nextId(prefix) {
-  const ids = new Ids([ 32,32,1 ]);
+  const ids = new Ids([32, 32, 1]);
 
   return ids.nextPrefixed(prefix);
+}
+
+export function isBasicType(t) {
+  if (t == "String" ||
+    t == "Int" ||
+    t == "Boolean" ||
+    t == "Float") {
+    return true;
+  } else {
+    return false;
+  }
 }
