@@ -8,6 +8,7 @@ import stepProps from './parts/StepProps';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 // Import the properties panel list group component.
 import { ListGroup } from '@bpmn-io/properties-panel';
+import stepDataRefListProps from './parts/StepDataRefListProps';
 
 const LOW_PRIORITY = 500;
 
@@ -60,6 +61,7 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
 
       if (is(element, 'bpmn:Task')) {
         groups.push(createStepGroup(element, injector, translate));
+        groups.push(createStepDataRefGroup(element, injector, translate));
       }
 
       return groups;
@@ -122,4 +124,15 @@ function createStepGroup(element, injector, translate) {
   };
 
   return stepGroup;
+}
+
+//create the custom step data refs group.
+function createStepDataRefGroup(element, injector, translate) {
+  const stepDataRefGroup = {
+    id: 'dataRefs',
+    label: translate('Data Reference'),
+    component: ListGroup,
+    ...stepDataRefListProps({ element, injector, translate })
+  }
+  return stepDataRefGroup;
 }

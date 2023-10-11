@@ -239,9 +239,37 @@
           "name": "stepInput",
           "isAttr": true,
           "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "StepDataRefList",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "isMany": true,
+          "type": "StepDataRef"
+        }
+      ]
+    },
+    {
+      "name": "StepDataRef",
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
         },
         {
-          "name": "stepInputRef",
+          "name": "variable",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
           "isAttr": true,
           "type": "String"
         }
