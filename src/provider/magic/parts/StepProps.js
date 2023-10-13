@@ -6,7 +6,8 @@ import { isBasicType } from '../util';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 // import hooks from the vendored preact package
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
-
+import stepDataRefListProps from './StepDataRefListProps';
+import StepDataRefListProps from './StepDataRefListProps';
 export default function StepProps({ element, injector, translate }) {
 
     var inputData = [];
@@ -24,7 +25,6 @@ export default function StepProps({ element, injector, translate }) {
     element.businessObject.dataOutputAssociations?.forEach(dataOutput => {
         var target = dataOutput.targetRef;
         var data = elementRegistry.get(target.linkedSupDataId);
-        console.log(data);
         data?.businessObject.extensionElements?.values.map(function (extension) {
             extension.values.map(function (p) {
                 outputData.push(p);
@@ -68,12 +68,6 @@ export default function StepProps({ element, injector, translate }) {
                 });
             }),
             shouldSort: false
-        },
-        {
-            id: 'stepInputRef',
-            element,
-            component: StepInputRef,
-            isEdited: isTextFieldEntryEdited
         }
     ];
 }
@@ -157,36 +151,8 @@ function StepOutput(props) {
     };
 }
 
-function StepInputRef(props) {
-    const { element, id } = props;
-
-    const modeling = useService('modeling');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
-
-    const getValue = () => {
-        return element.businessObject.stepInputRef || '';
-    }
-
-    const setValue = (value) => {
-        return modeling.updateProperties(element, {
-            stepInputRef: value
-        });
-    }
-
-    return TextFieldEntry({
-        element: element,
-        id: id + '-stepInputRef',
-        label: translate('Step Input Reference'),
-        getValue,
-        setValue,
-        debounce
-    });
-}
-
 function getEntries(subType, id, injector) {
     let entries = [];
-    console.log(subType)
     if (subType !== undefined) {
         if (subType.includes("Record")) {
             let regex = /\((.*?)\)/;

@@ -188,16 +188,16 @@ function Type(props) {
       }))
     ];
   }
-  return <SelectEntry
-    id={idPrefix + '-type'}
-    element={parameter}
-    description={translate('Select a defined type')}
-    label={translate('Type')}
-    getValue={getValue}
-    setValue={setValue}
-    getOptions={getOptions}
-    debounce={debounce}
-  />
+  return SelectEntry({
+    element: parameter,
+    id: idPrefix + '-type',
+    description: translate('Select a defined type'),
+    label: translate('Type'),
+    getValue: getValue,
+    setValue: setValue,
+    getOptions: getOptions,
+    debounce: debounce
+  });
 }
 
 function Value(props) {
