@@ -368,7 +368,7 @@ function Record(props) {
       schema.forEach(function (data) {
         data.businessObject.extensionElements.values.forEach(function (extension) {
           extension.values.forEach(function (t) {
-            if (t.type === 'Record' && t.name !== type.record.name) {
+            if (t.type === 'Record' && t.name !== type.name) {
               recordTypes.push(t.name);
             }
           });

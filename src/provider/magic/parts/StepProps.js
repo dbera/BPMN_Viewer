@@ -15,21 +15,15 @@ export default function StepProps({ element, injector, translate }) {
     const elementRegistry = injector.get('elementRegistry');
     element.businessObject.dataInputAssociations?.forEach(dataInput => {
         var source = dataInput.sourceRef[0];
-        var data = elementRegistry.get(source.linkedSupDataId);
-        data?.businessObject.extensionElements?.values.map(function (extension) {
-            extension.values.map(function (p) {
-                inputData.push(p);
-            });
-        });
+        if (source != undefined) {
+            getDataParameters(source, elementRegistry).map(p => inputData.push(p));
+        }
     });
     element.businessObject.dataOutputAssociations?.forEach(dataOutput => {
         var target = dataOutput.targetRef;
-        var data = elementRegistry.get(target.linkedSupDataId);
-        data?.businessObject.extensionElements?.values.map(function (extension) {
-            extension.values.map(function (p) {
-                outputData.push(p);
-            });
-        });
+        if (target != undefined) {
+            getDataParameters(target, elementRegistry).map(p => outputData.push(p));
+        }
     });
 
     return [
@@ -101,6 +95,7 @@ function StepType(props) {
 
 function StepInput(props) {
     const { id, p, injector } = props;
+    console.log(p)
     let type = p.type.split(/:(.*)/s)[0];
     let subType = p.type.split(/:(.*)/s)[1];
     let entries = [];
@@ -210,4 +205,19 @@ function getTypeDef(type, injector) {
         });
     });
     return typeDef;
+}
+
+function getDataParameters(source, elementRegistry) {
+    let dataParams = [];
+    source?.extensionElements?.values.map(function (extension) {
+        extension.values.map(function (p) {
+            dataParams.push(p);
+        });
+    });
+    if (source.linkedSupDataId != undefined) {
+        var data = elementRegistry.get(source.linkedSupDataId);
+        getDataParameters(data?.businessObject, elementRegistry).map(p =>
+            dataParams.push(p));
+    }
+    return dataParams;
 }
