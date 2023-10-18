@@ -60,8 +60,13 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
       }
 
       if (is(element, 'bpmn:Task')) {
+        groups.push(createGuardGroup(element, translate));
         groups.push(createStepGroup(element, injector, translate));
         groups.push(createStepDataRefGroup(element, injector, translate));
+      }
+
+      if (is(element, 'bpmn:SequenceFlow')) {
+        groups.push(createGuardGroup(element, translate));
       }
 
       return groups;
@@ -135,4 +140,14 @@ function createStepDataRefGroup(element, injector, translate) {
     ...stepDataRefListProps({ element, injector, translate })
   }
   return stepDataRefGroup;
+}
+
+//create the custom guard group.
+function createGuardGroup(element, translate) {
+  const guardGroup = {
+    id: 'guard',
+    label: translate('Guard Extensions'),
+    entries: guardProps(element)
+  };
+  return guardGroup
 }

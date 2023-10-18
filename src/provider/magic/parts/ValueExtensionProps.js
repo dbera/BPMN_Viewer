@@ -1,4 +1,4 @@
-import { TextFieldEntry } from '@bpmn-io/properties-panel';
+import { TextAreaEntry, isTextAreaEntryEdited } from '@bpmn-io/properties-panel';
 import { SelectEntry, isSelectEntryEdited } from '@bpmn-io/properties-panel';
 import { useService } from 'bpmn-js-properties-panel';
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
@@ -34,7 +34,7 @@ export default function ValueExtensionProps(props) {
                 extension,
                 idPrefix,
                 element,
-                isEdited: isSelectEntryEdited
+                isEdited: isTextAreaEntryEdited
             }
         );
     }
@@ -126,7 +126,7 @@ function Value(props) {
         return extension.value;
     };
 
-    return TextFieldEntry({
+    return TextAreaEntry({
         element: extension,
         id: idPrefix + '-value',
         getValue,

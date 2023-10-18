@@ -5,7 +5,7 @@ const inputDataPosition = { x: 200, y: 400 };
 const outputDataPosition = { x: 800, y: 400 };
 export default function CustomDrilldown(eventBus, canvas, elementFactory, elementRegistry, modeling) {
 
-    //update name of event and data will update elements in all levels
+    //handle deletion or update name of event/data reference will delete/update elements in all levels
     eventBus.on('element.changed', function (event) {
         var ele = event.element;
         if (isAny(ele, ['bpmn:IntermediateCatchEvent', 'bpmn:IntermediateThrowEvent'])) {
@@ -13,43 +13,50 @@ export default function CustomDrilldown(eventBus, canvas, elementFactory, elemen
                 if (typeof ele.businessObject.linkedInfEventId !== 'undefined' &&
                     ele.businessObject.linkedInfEventId !== '') {
                     var linkedEvent = elementRegistry.get(ele.businessObject.linkedInfEventId);
-                    if (linkedEvent.businessObject.name !== ele.businessObject.name) {
-                        modeling.updateProperties(linkedEvent, {
-                            name: ele.businessObject.name
-                        });
+                    if (linkedEvent !== undefined) {
+                        if (linkedEvent?.businessObject.name !== ele.businessObject.name) {
+                            modeling.updateProperties(linkedEvent, {
+                                name: ele.businessObject.name
+                            });
+                        }
+                        if (ele.businessObject.linkedInfEventId !== "") {
+                            modeling.updateProperties(ele, {
+                                linkedInfEventId: ''
+                            });
+                        }
                     }
+
                 }
-                if (typeof ele.businessObject.linkedSupEventId !== 'undefined' &&
-                    ele.businessObject.linkedSupEventId !== '') {
-                    var linkedEvent = elementRegistry.get(ele.businessObject.linkedSupEventId);
-                    if (linkedEvent.businessObject.name !== ele.businessObject.name) {
-                        modeling.updateProperties(linkedEvent, {
-                            name: ele.businessObject.name
-                        });
-                    }
+            } else {
+                linkedEvent = elementRegistry.get(ele.businessObject.linkedInfEventId);
+                if (ele.businessObject.name == null && linkedEvent !== undefined) {
+                    modeling.removeElements([linkedEvent]);
                 }
             }
         }
 
         if (isAny(ele, ['bpmn:DataStoreReference', 'bpmn:DataObjectReference'])) {
             if (ele.type === 'label') {
-                if (typeof ele.businessObject.linkedInfDataId !== 'undefined' &&
+                if (typeof ele.businessObject.linkedInfDataId !== "undefined" &&
                     ele.businessObject.linkedInfDataId !== '') {
                     var linkedData = elementRegistry.get(ele.businessObject.linkedInfDataId);
-                    if (linkedData.businessObject.name !== ele.businessObject.name) {
-                        modeling.updateProperties(linkedData, {
-                            name: ele.businessObject.name
-                        });
+                    if (linkedData !== undefined) {
+                        if (linkedData.businessObject.name !== ele.businessObject.name) {
+                            modeling.updateProperties(linkedData, {
+                                name: ele.businessObject.name
+                            });
+                        }
+                        if (ele.businessObject.linkedInfDataId !== "") {
+                            modeling.updateProperties(ele, {
+                                linkedInfDataId: ''
+                            });
+                        }
                     }
                 }
-                if (typeof ele.businessObject.linkedSupDataId !== 'undefined' &&
-                    ele.businessObject.linkedSupDataId !== '') {
-                    var linkedData = elementRegistry.get(ele.businessObject.linkedSupDataId);
-                    if (linkedData.businessObject.name !== ele.businessObject.name) {
-                        modeling.updateProperties(linkedData, {
-                            name: ele.businessObject.name
-                        });
-                    }
+            } else {
+                linkedData = elementRegistry.get(ele.businessObject.linkedInfDataId);
+                if (ele.businessObject.name == null && linkedData !== undefined) {
+                    modeling.removeElements([linkedData]);
                 }
             }
         }
@@ -88,13 +95,13 @@ export default function CustomDrilldown(eventBus, canvas, elementFactory, elemen
                         });
                     }
                     if (is(target.eventDefinitions[0], 'bpmn:TimerEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateCatchEvent',
                             eventDefinitionType: 'bpmn:TimerEventDefinition'
                         });
                     }
                     if (is(target.eventDefinitions[0], 'bpmn:SignalEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateCatchEvent',
                             eventDefinitionType: 'bpmn:SignalEventDefinition'
                         });
@@ -106,19 +113,19 @@ export default function CustomDrilldown(eventBus, canvas, elementFactory, elemen
                 }
                 if (is(target, 'bpmn:IntermediateThrowEvent')) {
                     if (is(target.eventDefinitions[0], 'bpmn:EscalationEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateThrowEvent',
                             eventDefinitionType: 'bpmn:EscalationEventDefinition'
                         });
                     }
                     if (is(target.eventDefinitions[0], 'bpmn:MessageEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateThrowEvent',
                             eventDefinitionType: 'bpmn:MessageEventDefinition'
                         });
                     }
                     if (is(target.eventDefinitions[0], 'bpmn:SignalEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateThrowEvent',
                             eventDefinitionType: 'bpmn:SignalEventDefinition'
                         });
@@ -150,13 +157,13 @@ export default function CustomDrilldown(eventBus, canvas, elementFactory, elemen
                         });
                     }
                     if (is(source.eventDefinitions[0], 'bpmn:TimerEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateCatchEvent',
                             eventDefinitionType: 'bpmn:TimerEventDefinition'
                         });
                     }
                     if (is(source.eventDefinitions[0], 'bpmn:SignalEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateCatchEvent',
                             eventDefinitionType: 'bpmn:SignalEventDefinition'
                         });
@@ -168,19 +175,19 @@ export default function CustomDrilldown(eventBus, canvas, elementFactory, elemen
                 }
                 if (is(source, 'bpmn:IntermediateThrowEvent')) {
                     if (is(source.eventDefinitions[0], 'bpmn:EscalationEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateThrowEvent',
                             eventDefinitionType: 'bpmn:EscalationEventDefinition'
                         });
                     }
                     if (is(source.eventDefinitions[0], 'bpmn:MessageEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateThrowEvent',
                             eventDefinitionType: 'bpmn:MessageEventDefinition'
                         });
                     }
                     if (is(source.eventDefinitions[0], 'bpmn:SignalEventDefinition')) {
-                        var newEvent = elementFactory.createShape({
+                        newEvent = elementFactory.createShape({
                             type: 'bpmn:IntermediateThrowEvent',
                             eventDefinitionType: 'bpmn:SignalEventDefinition'
                         });

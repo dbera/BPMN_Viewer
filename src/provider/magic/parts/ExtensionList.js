@@ -107,14 +107,12 @@ function Extension(props) {
     id: idPrefix,
     index,
     item: extension,
-    open,
-    type
+    open
   } = props;
 
   const translate = useService('translate');
 
   const id = `${idPrefix}-extension-${index}`;
-
   return (
     <CollapsibleEntry
       id={id}
@@ -122,8 +120,7 @@ function Extension(props) {
       entries={ExtensionProps({
         extension,
         element,
-        idPrefix: id,
-        type
+        idPrefix: id
       })}
       label={extension.get('key') || translate('<empty>')}
       open={open}
