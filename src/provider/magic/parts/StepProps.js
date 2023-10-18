@@ -95,7 +95,6 @@ function StepType(props) {
 
 function StepInput(props) {
     const { id, p, injector } = props;
-    console.log(p)
     let type = p.type.split(/:(.*)/s)[0];
     let subType = p.type.split(/:(.*)/s)[1];
     let entries = [];

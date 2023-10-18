@@ -1,9 +1,10 @@
-import { TextFieldEntry, SelectEntry, isSelectEntryEdited } from '@bpmn-io/properties-panel';
+import { TextFieldEntry, TextAreaEntry, SelectEntry, isSelectEntryEdited, isTextAreaEntryEdited } from '@bpmn-io/properties-panel';
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
-import { is, getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
+import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { useService } from 'bpmn-js-properties-panel';
-import { param } from 'jquery';
 import ValueList from './ValueList';
+import ItemList from './ItemList';
+import MapItemList from './MapItemList';
 import { simpleLists, simpleTypes } from '../../../constant';
 export default function ParameterProps(props) {
 
@@ -31,7 +32,7 @@ export default function ParameterProps(props) {
 
   if (parameter.type != undefined) {
     let type = parameter.type.split(":")[1];
-    if (type.includes("Record")) {
+    if (type.startsWith("Record")) {
       let regex = /\((.*?)\)/;
       let fields = regex.exec(parameter.type)[1].split(",");
       entries.push(
@@ -41,6 +42,29 @@ export default function ParameterProps(props) {
           idPrefix,
           parameter,
           fields
+        }
+      );
+    } else if (type.startsWith("List")) {
+      let regex = /<(.*?)>/;
+      let item = regex.exec(parameter.type)[1];
+      entries.push(
+        {
+          id: idPrefix + '-item',
+          component: ItemList,
+          idPrefix,
+          parameter,
+          item,
+          shouldSort: false
+        }
+      );
+    } else if (type.startsWith("Map")) {
+      entries.push(
+        {
+          id: idPrefix + '-map',
+          component: MapItemList,
+          idPrefix,
+          parameter,
+          shouldSort: false
         }
       );
     }
@@ -62,7 +86,8 @@ export default function ParameterProps(props) {
           id: idPrefix + '-value',
           component: Value,
           idPrefix,
-          parameter
+          parameter,
+          isEdited: isTextAreaEntryEdited
         }
       );
     }
@@ -225,7 +250,7 @@ function Value(props) {
     return parameter.value;
   };
 
-  return TextFieldEntry({
+  return TextAreaEntry({
     element: parameter,
     id: idPrefix + '-value',
     label: translate('Value'),
@@ -240,14 +265,12 @@ function Field(props) {
     idPrefix,
     element,
     parameter,
-    name,
-    index
+    name
   } = props;
 
   const commandStack = useService('commandStack');
   const translate = useService('translate');
   const debounce = useService('debounceInput');
-  console.log(index);
 
   const setValue = (field) => {
     commandStack.execute('element.updateModdleProperties', {

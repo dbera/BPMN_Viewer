@@ -198,6 +198,11 @@
           "type": "String"
         },
         {
+          "name": "keyType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "type",
           "isAttr": true,
           "type": "String"
@@ -219,6 +224,11 @@
         },
         {
           "name": "value",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "valueType",
           "isAttr": true,
           "type": "String"
         }

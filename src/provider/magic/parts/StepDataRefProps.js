@@ -1,6 +1,4 @@
-import { TextFieldEntry, SelectEntry, isSelectEntryEdited } from '@bpmn-io/properties-panel';
-import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
-import { is, getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
+import { TextFieldEntry, TextAreaEntry, isTextAreaEntryEdited } from '@bpmn-io/properties-panel';
 import { useService } from 'bpmn-js-properties-panel';
 
 export default function StepDataRefProps(props) {
@@ -8,7 +6,6 @@ export default function StepDataRefProps(props) {
         idPrefix,
         ref
     } = props;
-    console.log(ref)
     const entries = [
         {
             id: idPrefix + '-var',
@@ -21,6 +18,7 @@ export default function StepDataRefProps(props) {
             component: Value,
             idPrefix,
             stepDataRef: ref,
+            isEdited: isTextAreaEntryEdited
         }
     ];
 
@@ -33,7 +31,7 @@ function Variable(props) {
         element,
         stepDataRef
     } = props;
-    console.log(stepDataRef)
+
     const commandStack = useService('commandStack');
     const translate = useService('translate');
     const debounce = useService('debounceInput');
@@ -49,7 +47,6 @@ function Variable(props) {
     };
 
     const getValue = (stepDataRef) => {
-        console.log(stepDataRef)
         return stepDataRef.variable;
     };
 
@@ -88,7 +85,7 @@ function Value(props) {
         return stepDataRef.value;
     };
 
-    return TextFieldEntry({
+    return TextAreaEntry({
         element: stepDataRef,
         id: idPrefix + '-value',
         label: translate('Value'),

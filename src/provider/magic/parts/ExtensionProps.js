@@ -23,20 +23,12 @@ export default function ExtensionProps(props) {
       id: idPrefix + '-type',
       component: Type,
       extension,
-      idPrefix,
       element,
+      idPrefix,
       isEdited: isSelectEntryEdited
     }
   ];
-  if (extension.type === 'Record') {
-    entries.push({
-      id: idPrefix + '-record',
-      component: Record,
-      idPrefix,
-      extension,
-      isEdited: isSelectEntryEdited
-    });
-  }
+
   return entries;
 }
 
@@ -44,7 +36,7 @@ function Key(props) {
   const {
     idPrefix,
     element,
-    extension
+    extension,
   } = props;
 
   const commandStack = useService('commandStack'),
@@ -77,14 +69,15 @@ function Key(props) {
 
 function Type(props) {
   const {
-    idPrefix,
+    extension,
     element,
-    extension
+    idPrefix,
   } = props;
   const commandStack = useService('commandStack'),
     translate = useService('translate'),
-    debounce = useService('debounceInput');
-
+    debounce = useService('debounceInput'),
+    elementRegistry = useService('elementRegistry'),
+    parentType = extension.parentType;
   const setValue = (value) => {
     commandStack.execute('element.updateModdleProperties', {
       element,
@@ -97,11 +90,51 @@ function Type(props) {
   const getValue = (extension) => {
     return extension.type;
   };
-
+  const schema = elementRegistry.filter(function (element) {
+    return is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
+  });
   const [types, setTypes] = useState([]);
   useEffect(() => {
     function fetchTypes() {
-      setTypes(['Record', 'List', 'Set', 'Map', 'String', 'Int', 'Boolean', 'Float']);
+      var typeSchema = ['String', 'Int', 'Boolean', 'Float'];
+      schema.forEach(function (data) {
+        data.businessObject.extensionElements.values.forEach(function (extension) {
+          extension.values.forEach(function (type) {
+            if (type.name !== parentType) {
+              switch (type.type) {
+                case 'Record':
+                  const subTypes = [];
+                  type.extensions?.extensions.forEach(function (subType) {
+                    if (subType.record !== undefined) {
+                      subTypes.push(subType.key + ':' + subType.record);
+                    } else {
+                      subTypes.push(subType.key + ':' + subType.type);
+                    }
+                  });
+                  const subTypeslabel = '(' + subTypes.join(", ") + ')';
+                  typeSchema.push(type.name + ':' + type.type + subTypeslabel);
+                  break;
+                case 'List':
+                  var label = '';
+                  if (type.subType === 'Record') {
+                    label = ':' + type.record;
+                  }
+                  typeSchema.push(type.name + ':' + type.type + '<' + type.subType + label + '>');
+                  break;
+                case 'Set':
+                  typeSchema.push(type.name + ':' + type.type + '<' + type.subType + '>');
+                  break;
+                case 'Map':
+                  typeSchema.push(type.name + ':' + type.type + '<' + type.key + ', ' + type.value + '>');
+                  break;
+                default:
+                  typeSchema.push(type.name + ':' + type.type);
+              }
+            }
+          });
+        });
+      });
+      setTypes(typeSchema);
     }
     fetchTypes();
   }, [setTypes]);
@@ -125,7 +158,7 @@ function Type(props) {
     setValue={setValue}
     getOptions={getOptions}
     debounce={debounce}
-  />
+  />;
 
 }
 
@@ -154,8 +187,7 @@ function Record(props) {
     return extension.record;
   };
   const schema = elementRegistry.filter(function (element) {
-    return element.businessObject.name === 'Schema' &&
-      is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
+    return is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
   });
   const [records, setRecords] = useState([]);
   useEffect(() => {

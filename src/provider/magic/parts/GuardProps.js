@@ -1,73 +1,78 @@
-import { isTextFieldEntryEdited, TextFieldEntry } from '@bpmn-io/properties-panel';
+import { isTextFieldEntryEdited, TextFieldEntry, isTextAreaEntryEdited, TextAreaEntry } from '@bpmn-io/properties-panel';
 import { useService } from 'bpmn-js-properties-panel';
+import { is } from 'bpmn-js/lib/util/ModelUtil';
+export default function (element) {
+  const entries = [
+    {
+      id: 'expression',
+      element,
+      component: Expression,
+      isEdited: isTextAreaEntryEdited
+    }
+  ];
+  if (is(element, 'bpmn:DataInputAssociation') ||
+    is(element, 'bpmn:DataObjectReference')) {
+    entries.push({
+      id: 'name',
+      element,
+      component: Name,
+      isEdited: isTextFieldEntryEdited
+    });
+  }
 
-export default function(element) {
-    return [
-      {
-        id: 'expression',
-        element,
-        component: Expression,
-        isEdited: isTextFieldEntryEdited
-      },
-      {
-        id: 'name',
-        element,
-        component: Name,
-        isEdited: isTextFieldEntryEdited
-      }
-    ];
+  return entries;
 }
 
-  function Expression(props) {
-    const { element, id } = props;
+function Expression(props) {
+  const { element, id } = props;
 
-    const modeling = useService('modeling');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
+  const modeling = useService('modeling');
+  const translate = useService('translate');
+  const debounce = useService('debounceInput');
 
-    const getValue = () => {
-      return element.businessObject.expression || '';
-    }
+  const getValue = () => {
+    return element.businessObject.expression || '';
+  }
 
-    const setValue = (value) => {
-        return modeling.updateProperties(element, {
-            expression: value
-        });
-    }
-
-    return TextFieldEntry({
-        element: element,
-        id: id + '-name',
-        label: translate('Expression'),
-        getValue,
-        setValue,
-        debounce
+  const setValue = (value) => {
+    return modeling.updateProperties(element, {
+      expression: value
     });
   }
 
-  function Name(props) {
-    const { element, id } = props;
+  return TextAreaEntry({
+    element: element,
+    id: id + '-name',
+    label: translate('Expression'),
+    getValue,
+    setValue,
+    debounce
+  });
+}
 
-    const modeling = useService('modeling');
-    const translate = useService('translate');
-    const debounce = useService('debounceInput');
+function Name(props) {
+  const { element, id } = props;
 
-    const getValue = () => {
-      return element.businessObject.name || '';
-    }
+  const modeling = useService('modeling');
+  const translate = useService('translate');
+  const debounce = useService('debounceInput');
 
-    const setValue = (value) => {
-        return modeling.updateProperties(element, {
-            name: value
-        });
-    }
+  const getValue = () => {
+    return element.businessObject.name || '';
+  }
 
-    return TextFieldEntry({
-        element: element,
-        id: id + '-name',
-        label: translate('Name'),
-        getValue,
-        setValue,
-        debounce
+  const setValue = (value) => {
+    return modeling.updateProperties(element, {
+      name: value
     });
   }
+
+  return TextFieldEntry({
+    element: element,
+    id: id + '-name',
+    label: translate('Name'),
+    getValue,
+    setValue,
+    debounce
+  });
+}

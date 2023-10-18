@@ -65,16 +65,16 @@ export default function TypeProps(props) {
         isEdited: isSelectEntryEdited
       });
   }
-  if (type.subType === 'Record') {
-    entries.push({
-      id: idPrefix + '-record',
-      component: Record,
-      idPrefix,
-      type,
-      isEdited: isSelectEntryEdited
-    });
+  // if (type.subType === 'Record') {
+  //   entries.push({
+  //     id: idPrefix + '-record',
+  //     component: Record,
+  //     idPrefix,
+  //     type,
+  //     isEdited: isSelectEntryEdited
+  //   });
 
-  }
+  // }
   return entries;
 }
 
@@ -178,7 +178,7 @@ function SubType(props) {
   const commandStack = useService('commandStack');
   const translate = useService('translate');
   const debounce = useService('debounceInput');
-
+  const elementRegistry = useService('elementRegistry');
   const setValue = (value) => {
     commandStack.execute('element.updateModdleProperties', {
       element,
@@ -192,11 +192,51 @@ function SubType(props) {
   const getValue = (type) => {
     return type.subType;
   };
-
+  const schema = elementRegistry.filter(function (element) {
+    return is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
+  });
   const [subtypes, setSubTypes] = useState([]);
   useEffect(() => {
     function fetchTypes() {
-      setSubTypes(['Record', 'String', 'Int', 'Boolean', 'Float']);
+      var typeSchema = ['String', 'Int', 'Boolean', 'Float'];
+      schema.forEach(function (data) {
+        data.businessObject.extensionElements.values.forEach(function (extension) {
+          extension.values.forEach(function (t) {
+            if (t.name !== type.name) {
+              switch (t.type) {
+                case 'Record':
+                  const subTypes = [];
+                  t.extensions?.extensions.forEach(function (subType) {
+                    if (subType.record !== undefined) {
+                      subTypes.push(subType.key + ':' + subType.record);
+                    } else {
+                      subTypes.push(subType.key + ':' + subType.type);
+                    }
+                  });
+                  const subTypeslabel = '(' + subTypes.join(", ") + ')';
+                  typeSchema.push(t.name + ':' + t.type + subTypeslabel);
+                  break;
+                case 'List':
+                  var label = '';
+                  if (t.subType === 'Record') {
+                    label = ':' + t.record;
+                  }
+                  typeSchema.push(t.name + ':' + t.type + '<' + t.subType + label + '>');
+                  break;
+                case 'Set':
+                  typeSchema.push(t.name + ':' + t.type + '<' + t.subType + '>');
+                  break;
+                case 'Map':
+                  typeSchema.push(t.name + ':' + t.type + '<' + t.key + ', ' + t.value + '>');
+                  break;
+                default:
+                  typeSchema.push(t.name + ':' + t.type);
+              }
+            }
+          });
+        });
+      });
+      setSubTypes(typeSchema);
     }
     fetchTypes();
   }, [setSubTypes]);
@@ -229,7 +269,7 @@ function Key(props) {
     element,
     type
   } = props;
-
+  const elementRegistry = useService('elementRegistry');
   const commandStack = useService('commandStack');
   const translate = useService('translate');
   const debounce = useService('debounceInput');
@@ -247,11 +287,34 @@ function Key(props) {
   const getValue = (type) => {
     return type.key;
   };
-
+  const schema = elementRegistry.filter(function (element) {
+    return is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
+  });
   const [keys, setKeys] = useState([]);
   useEffect(() => {
     function fetchKeys() {
-      setKeys(['String', 'Int']);
+      var typeSchema = ['String', 'Int', 'Boolean', 'Float'];
+      schema.forEach(function (data) {
+        data.businessObject.extensionElements.values.forEach(function (extension) {
+          extension.values.forEach(function (type) {
+            switch (type.type) {
+              case 'Record':
+                const subTypes = [];
+                type.extensions?.extensions.forEach(function (subType) {
+                  if (subType.record !== undefined) {
+                    subTypes.push(subType.key + ':' + subType.record);
+                  } else {
+                    subTypes.push(subType.key + ':' + subType.type);
+                  }
+                });
+                const subTypeslabel = '(' + subTypes.join(", ") + ')';
+                typeSchema.push(type.name + ':' + type.type + subTypeslabel);
+                break;
+            }
+          });
+        });
+      });
+      setKeys(typeSchema);
     }
     fetchKeys();
   }, [setKeys]);
@@ -284,7 +347,7 @@ function Value(props) {
     element,
     type
   } = props;
-
+  const elementRegistry = useService('elementRegistry');
   const commandStack = useService('commandStack');
   const translate = useService('translate');
   const debounce = useService('debounceInput');
@@ -302,11 +365,34 @@ function Value(props) {
   const getValue = (type) => {
     return type.value;
   };
-
+  const schema = elementRegistry.filter(function (element) {
+    return is(element, ['bpmn:DataStoreReference']) && !element.labelTarget;
+  });
   const [values, setValues] = useState([]);
   useEffect(() => {
     function fetchValues() {
-      setValues(['Record', 'String', 'Int', 'Boolean', 'Float']);
+      var typeSchema = ['String', 'Int', 'Boolean', 'Float'];
+      schema.forEach(function (data) {
+        data.businessObject.extensionElements.values.forEach(function (extension) {
+          extension.values.forEach(function (type) {
+            switch (type.type) {
+              case 'Record':
+                const subTypes = [];
+                type.extensions?.extensions.forEach(function (subType) {
+                  if (subType.record !== undefined) {
+                    subTypes.push(subType.key + ':' + subType.record);
+                  } else {
+                    subTypes.push(subType.key + ':' + subType.type);
+                  }
+                });
+                const subTypeslabel = '(' + subTypes.join(", ") + ')';
+                typeSchema.push(type.name + ':' + type.type + subTypeslabel);
+                break;
+            }
+          });
+        });
+      });
+      setValues(typeSchema);
     }
     fetchValues();
   }, [setValues]);
