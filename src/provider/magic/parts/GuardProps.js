@@ -42,7 +42,7 @@ function Expression(props) {
 
   return TextAreaEntry({
     element: element,
-    id: id + '-name',
+    id: id + '-expression',
     label: translate('Expression'),
     getValue,
     setValue,

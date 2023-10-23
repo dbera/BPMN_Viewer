@@ -31,10 +31,16 @@ export default function ParameterProps(props) {
   ];
 
   if (parameter.type != undefined) {
-    let type = parameter.type.split(":")[1];
+    let type = parameter.type.split(/:(.*)/s)[1];
     if (type.startsWith("Record")) {
-      let regex = /\((.*?)\)/;
-      let fields = regex.exec(parameter.type)[1].split(",");
+      let fields = [];
+      let field = type.substr(6, type.length - 2);
+      if (field.includes("Record")) {
+        let regex = /:Record\(.*?\)/g;
+        field = field.replaceAll(regex, "");
+      }
+      field = field.replace("(", "").replace(")", "").trim();
+      fields = field.split(",");
       entries.push(
         {
           id: idPrefix + '-value',
@@ -64,6 +70,19 @@ export default function ParameterProps(props) {
           component: MapItemList,
           idPrefix,
           parameter,
+          shouldSort: false
+        }
+      );
+    } else if (type.startsWith("Set")) {
+      let regex = /<(.*?)>/;
+      let item = regex.exec(parameter.type)[1];
+      entries.push(
+        {
+          id: idPrefix + '-item',
+          component: ItemList,
+          idPrefix,
+          parameter,
+          item,
           shouldSort: false
         }
       );

@@ -95,7 +95,7 @@ function StepType(props) {
 
 function StepInput(props) {
     const { id, p, injector } = props;
-    let type = p.type.split(/:(.*)/s)[0];
+    let type = p.type;
     let subType = p.type.split(/:(.*)/s)[1];
     let entries = [];
 
@@ -121,7 +121,7 @@ function StepInput(props) {
 
 function StepOutput(props) {
     const { id, p, injector } = props;
-    let type = p.type.split(/:(.*)/s)[0];
+    let type = p.type;
     let subType = p.type.split(/:(.*)/s)[1];
     let entries = [];
 
@@ -148,28 +148,51 @@ function StepOutput(props) {
 function getEntries(subType, id, injector) {
     let entries = [];
     if (subType !== undefined) {
-        if (subType.includes("Record")) {
-            let regex = /\((.*?)\)/;
-            let fields = regex.exec(subType)[1].split(",");
-            fields.map((f) => {
-                const t = f.split(":")[1]
-                if (isBasicType(t)) {
-                    entries.push({
-                        id: `${id}-field`,
-                        label: `${f}`,
-                        component: ListItem
-                    });
-                } else {
-                    let field = getTypeDef(t, injector);
+        let fields = [];
+        let field = "";
+
+        if (subType.startsWith("Record")) {
+            field = subType.substr(6, subType.length - 2);
+        } else if (subType.startsWith("Set")) {
+            field = subType.substr(3, subType.length - 2);
+            field = field.replace("<", "").replace(">", "").trim();
+        } else if (subType.startsWith("List")) {
+            field = subType.substr(4, subType.length - 2);
+            field = field.replace("<", "").replace(">", "").trim();
+        } else if (subType.startsWith("Map")) {
+            field = subType.substr(3, subType.length - 2);
+            field = field.replace("<", "").replace(">", "").trim();
+        }
+
+        if (field.includes("Record")) {
+            let regex = /:Record\(.*?\)/g;
+            field = field.replaceAll(regex, "");
+        }
+        field = field.replace("(", "").replace(")", "").trim();
+        fields = field.split(",");
+        fields.map((f) => {
+            let t = f.trim();
+            if (f.includes(":")) {
+                t = f.split(":")[1];
+            }
+            if (isBasicType(t)) {
+                entries.push({
+                    id: `${id}-field`,
+                    label: `${f}`,
+                    component: ListItem
+                });
+            } else {
+                let subTypes = getTypeDef(t, injector);
+                if (subTypes !== "") {
                     entries.push({
                         id: `${id}-field`,
                         label: `${f}`,
                         component: ListItem,
-                        entries: getEntries(field, id, injector)
+                        entries: getEntries(subTypes, id, injector)
                     });
                 }
-            });
-        }
+            }
+        });
 
     }
     return entries;

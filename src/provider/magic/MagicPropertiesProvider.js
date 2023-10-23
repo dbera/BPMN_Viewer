@@ -5,6 +5,7 @@ import guardProps from './parts/GuardProps';
 import parametersProps from './parts/ParametersProps';
 import typesProps from './parts/TypesProps';
 import stepProps from './parts/StepProps';
+import ObjectTypeProps from './parts/ObjectTypeProps';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 // Import the properties panel list group component.
 import { ListGroup } from '@bpmn-io/properties-panel';
@@ -56,7 +57,17 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
         groups.push(createExtensionGroup(element, translate));
       }
       if (is(element, 'bpmn:DataObjectReference')) {
+        groups.push(createDataTypeGroup(element, translate));
         groups.push(createParametersGroup(element, injector, translate));
+      }
+
+      if (is(element, 'bpmn:IntermediateCatchEvent') || is(element, 'bpmn:IntermediateThrowEvent')) {
+        if (is(element.businessObject.eventDefinitions[0], 'bpmn:MessageEventDefinition') ||
+          is(element.businessObject.eventDefinitions[0], 'bpmn:SignalEventDefinition') ||
+          is(element.businessObject.eventDefinitions[0], 'bpmn:TimerEventDefinition')) {
+          groups.push(createDataTypeGroup(element, translate));
+          groups.push(createParametersGroup(element, injector, translate));
+        }
       }
 
       if (is(element, 'bpmn:Task')) {
@@ -150,4 +161,14 @@ function createGuardGroup(element, translate) {
     entries: guardProps(element)
   };
   return guardGroup
+}
+
+//create the custom DataType group.
+function createDataTypeGroup(element, translate) {
+  const objectTypeGroup = {
+    id: 'dataType',
+    label: translate('Data Type'),
+    entries: ObjectTypeProps(element)
+  };
+  return objectTypeGroup
 }

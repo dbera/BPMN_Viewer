@@ -62,11 +62,28 @@
       "name": "DataExpression",
       "extends": [
         "bpmn:DataOutputAssociation",
-        "bpmn:DataInputAssociation"
+        "bpmn:DataInputAssociation",
+        "bpmn:SequenceFlow",
+        "bpmn:Task"
       ],
       "properties": [
         {
           "name": "expression",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ObjectType",
+      "extends": [
+        "bpmn:DataObjectReference",
+        "bpmn:IntermediateCatchEvent",
+        "bpmn:IntermediateThrowEvent"
+      ],
+      "properties": [
+        {
+          "name": "objectType",
           "isAttr": true,
           "type": "String"
         }
