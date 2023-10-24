@@ -14,9 +14,6 @@ export default function CustomLabel(eventBus, modeling) {
                     } else {
                         newLabel = getBusinessObject(ele).name + ":" + getBusinessObject(ele).objectType?.split(":")[0];
                     }
-                    console.log(newLabel)
-                    console.log(getLabel(ele))
-                    console.log(newLabel !== getLabel(ele));
                     if (newLabel !== getLabel(ele)) {
                         modeling.updateProperties(ele, {
                             name: newLabel

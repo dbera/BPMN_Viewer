@@ -2,7 +2,7 @@ import { TextAreaEntry, isTextAreaEntryEdited } from '@bpmn-io/properties-panel'
 import { SelectEntry, isSelectEntryEdited } from '@bpmn-io/properties-panel';
 import { useService } from 'bpmn-js-properties-panel';
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
-import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 import { simpleTypes } from '../../../constant';
 
 export default function ValueExtensionProps(props) {
@@ -137,7 +137,7 @@ function Value(props) {
 }
 
 function getDataObjectRoot(context) {
-    if (is(context, ['bpmn:DataObjectReference'])) {
+    if (isAny(context, ['bpmn:DataObjectReference', 'bpmn:IntermediateCatchEvent', 'bpmn:IntermediateThrowEvent'])) {
         return context;
     } else {
         return getDataObjectRoot(context.$parent);

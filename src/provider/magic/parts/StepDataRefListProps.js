@@ -50,7 +50,6 @@ function removeFactory({ commandStack, element, ref }) {
         }
 
         const refs = without(extension.get('values'), ref);
-        console.log("remove")
         commandStack.execute('element.updateModdleProperties', {
             element,
             moddleElement: extension,

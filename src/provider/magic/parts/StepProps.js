@@ -8,10 +8,13 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
 import stepDataRefListProps from './StepDataRefListProps';
 import StepDataRefListProps from './StepDataRefListProps';
+import { data } from 'jquery';
 export default function StepProps({ element, injector, translate }) {
 
     var inputData = [];
     var outputData = [];
+    var inputEventData = [];
+    var outputEventData = [];
     const elementRegistry = injector.get('elementRegistry');
     element.businessObject.dataInputAssociations?.forEach(dataInput => {
         var source = dataInput.sourceRef[0];
@@ -25,7 +28,18 @@ export default function StepProps({ element, injector, translate }) {
             getDataParameters(target, elementRegistry).map(p => outputData.push(p));
         }
     });
-
+    element.businessObject.incoming?.forEach(dataInput => {
+        var source = dataInput.sourceRef;
+        if (source != undefined) {
+            getDataParameters(source, elementRegistry).map(p => inputEventData.push(p));
+        }
+    });
+    element.businessObject.outgoing?.forEach(dataOutput => {
+        var target = dataOutput.targetRef;
+        if (target != undefined) {
+            getDataParameters(target, elementRegistry).map(p => outputEventData.push(p));
+        }
+    });
     return [
         {
             id: 'stepType',
@@ -35,7 +49,7 @@ export default function StepProps({ element, injector, translate }) {
         },
         {
             id: 'stepInput-group',
-            label: translate('Step Input'),
+            label: translate('Step Data Input'),
             component: ListGroup,
             items: inputData.map(function (p, index) {
                 const id = `${element.id}-stepInput-${index}`
@@ -50,11 +64,41 @@ export default function StepProps({ element, injector, translate }) {
         },
         {
             id: 'stepOutput-group',
-            label: translate('Step Output'),
+            label: translate('Step Data Output'),
             component: ListGroup,
             items: outputData.map(function (p, index) {
                 const id = `${element.id}-stepOutput-${index}`
                 return StepOutput({
+                    id,
+                    element,
+                    p,
+                    injector
+                });
+            }),
+            shouldSort: false
+        },
+        {
+            id: 'stepEventInput-group',
+            label: translate('Step Event Input'),
+            component: ListGroup,
+            items: inputEventData.map(function (p, index) {
+                const id = `${element.id}-stepEventInput-${index}`
+                return StepEventInput({
+                    id,
+                    element,
+                    p,
+                    injector
+                });
+            }),
+            shouldSort: false
+        },
+        {
+            id: 'stepEventOutput-group',
+            label: translate('Step Event Output'),
+            component: ListGroup,
+            items: outputEventData.map(function (p, index) {
+                const id = `${element.id}-stepEventOutput-${index}`
+                return StepEventOutput({
                     id,
                     element,
                     p,
@@ -119,7 +163,59 @@ function StepInput(props) {
     };
 }
 
+function StepEventInput(props) {
+    const { id, p, injector } = props;
+    let type = p.type;
+    let subType = p.type.split(/:(.*)/s)[1];
+    let entries = [];
+
+    if (subType.includes("Record")) {
+        getEntries(subType, id, injector).map(function (e) {
+            entries.push(e);
+        });
+    } else {
+        entries = [
+            {
+                id: `${id}-subType`,
+                label: `${subType}`,
+                component: ListItem,
+            },
+        ]
+    }
+    return {
+        id,
+        label: `${p.name} : ${type}`,
+        entries: entries
+    };
+}
+
 function StepOutput(props) {
+    const { id, p, injector } = props;
+    let type = p.type;
+    let subType = p.type.split(/:(.*)/s)[1];
+    let entries = [];
+
+    if (subType.includes("Record")) {
+        getEntries(subType, id, injector).map(function (e) {
+            entries.push(e);
+        });
+    } else {
+        entries = [
+            {
+                id: `${id}-subType`,
+                label: `${subType}`,
+                component: ListItem,
+            },
+        ]
+    }
+    return {
+        id,
+        label: `${p.name} : ${type}`,
+        entries: entries
+    };
+}
+
+function StepEventOutput(props) {
     const { id, p, injector } = props;
     let type = p.type;
     let subType = p.type.split(/:(.*)/s)[1];
@@ -236,8 +332,12 @@ function getDataParameters(source, elementRegistry) {
             dataParams.push(p);
         });
     });
-    if (source.linkedSupDataId != undefined) {
+    if (source.linkedSupDataId !== undefined) {
         var data = elementRegistry.get(source.linkedSupDataId);
+        getDataParameters(data?.businessObject, elementRegistry).map(p =>
+            dataParams.push(p));
+    } else if (source.linkedSupEventId !== undefined) {
+        data = elementRegistry.get(source.linkedSupEventId);
         getDataParameters(data?.businessObject, elementRegistry).map(p =>
             dataParams.push(p));
     }
