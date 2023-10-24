@@ -56,6 +56,7 @@ export default function ValueList(props) {
         if (extensions.extensions == undefined || extensions?.extensions?.length == 0) {
             let addExtensions = []
             for (var i = 0; i < fields.length; i++) {
+
                 const type = fields[i].split(":")[1];
                 const extension = createElement(
                     'magic:Extension',

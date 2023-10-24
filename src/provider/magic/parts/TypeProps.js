@@ -65,16 +65,6 @@ export default function TypeProps(props) {
         isEdited: isSelectEntryEdited
       });
   }
-  // if (type.subType === 'Record') {
-  //   entries.push({
-  //     id: idPrefix + '-record',
-  //     component: Record,
-  //     idPrefix,
-  //     type,
-  //     isEdited: isSelectEntryEdited
-  //   });
-
-  // }
   return entries;
 }
 

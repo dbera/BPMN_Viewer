@@ -10,7 +10,7 @@ export default function MapItemList(props) {
         idPrefix,
         parameter
     } = props;
-    console.log(parameter)
+
     const id = `${idPrefix}-values`;
 
     const bpmnFactory = useService('bpmnFactory');

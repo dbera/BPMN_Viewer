@@ -1,9 +1,11 @@
 import CustomRenderer from './CustomRenderer';
 import CustomDrilldown from './CustomDrilldown';
-import CustomUtil from './CustomUtil';
-
+import CustomConnRenderer from './CustomConnRenderer';
+import CustomLabel from './CustomLabel';
 export default {
-  __init__: [ 'customRenderer', 'customDrilldown' ],
-  customRenderer: [ 'type', CustomRenderer ],
-  customDrilldown: [ 'type', CustomDrilldown]
+  __init__: ['customDrilldown', 'customConnRenderer', 'customLabel'],
+  // customRenderer: ['type', CustomRenderer], for custom render shape
+  customDrilldown: ['type', CustomDrilldown],
+  customConnRenderer: ['type', CustomConnRenderer],
+  customLabel: ['type', CustomLabel]
 };
