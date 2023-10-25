@@ -79,3 +79,22 @@ export function isBasicType(t) {
     return false;
   }
 }
+
+export function getDataParameters(source, elementRegistry) {
+  let dataParams = [];
+  source?.extensionElements?.values.map(function (extension) {
+    extension.values.map(function (p) {
+      dataParams.push(p);
+    });
+  });
+  if (source.linkedSupDataId !== undefined) {
+    var data = elementRegistry.get(source.linkedSupDataId);
+    getDataParameters(data?.businessObject, elementRegistry).map(p =>
+      dataParams.push(p));
+  } else if (source.linkedSupEventId !== undefined) {
+    data = elementRegistry.get(source.linkedSupEventId);
+    getDataParameters(data?.businessObject, elementRegistry).map(p =>
+      dataParams.push(p));
+  }
+  return dataParams;
+}

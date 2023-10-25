@@ -55,9 +55,6 @@ export default class CustomConnectionRenderer extends BpmnRenderer {
 
       svgClasses(text).add('djs-label');
 
-
-
-
       const rect = drawRect(parentNode, 30, 20, TASK_BORDER_RADIUS, '#cc0000');
       svgAppend(rect, text);
       //this.renderExternalLabel(rect, element, labelText);

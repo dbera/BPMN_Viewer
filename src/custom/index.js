@@ -1,4 +1,3 @@
-import CustomRenderer from './CustomRenderer';
 import CustomDrilldown from './CustomDrilldown';
 import CustomConnRenderer from './CustomConnRenderer';
 import CustomLabel from './CustomLabel';

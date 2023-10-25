@@ -2,6 +2,7 @@
 // The entry is a text input field with logic attached to create,
 // update and delete the "spell" property.
 import guardProps from './parts/GuardProps';
+import featureProps from './parts/FeatureProps';
 import parametersProps from './parts/ParametersProps';
 import typesProps from './parts/TypesProps';
 import stepProps from './parts/StepProps';
@@ -72,6 +73,7 @@ export default function MagicPropertiesProvider(propertiesPanel, injector, trans
 
       if (is(element, 'bpmn:Task')) {
         groups.push(createGuardGroup(element, translate));
+        groups.push(createFeatureGroup(element, translate));
         groups.push(createStepGroup(element, injector, translate));
         groups.push(createStepDataRefGroup(element, injector, translate));
       }
@@ -161,6 +163,16 @@ function createGuardGroup(element, translate) {
     entries: guardProps(element)
   };
   return guardGroup
+}
+
+//create the custom feature group.
+function createFeatureGroup(element, translate) {
+  const featureGroup = {
+    id: 'feature',
+    label: translate('Feature Extensions'),
+    entries: featureProps(element)
+  };
+  return featureGroup
 }
 
 //create the custom DataType group.

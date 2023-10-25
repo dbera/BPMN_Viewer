@@ -6,19 +6,16 @@ import {
   append as svgAppend,
   classes as svgClasses,
   attr as svgAttr,
-  create as svgCreate,
-  remove as svgRemove
+  create as svgCreate
 } from 'tiny-svg';
 import { assign } from 'min-dash';
 import { getSemantic, getStrokeColor, getFillColor, getLabelColor, black } from 'bpmn-js/lib/draw/BpmnRenderUtil';
-import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 import { query as domQuery } from 'min-dom';
 import {
   transform
 } from 'diagram-js/lib/util/SvgTransformUtil';
 var RENDERER_IDS = new Ids();
-var ELEMENT_LABEL_DISTANCE = 10;
 
 export default function CustomConnRenderer(config, eventBus, styles, pathMap, canvas, textRenderer, bpmnRenderer) {
   BaseRenderer.call(this, eventBus, 2000);

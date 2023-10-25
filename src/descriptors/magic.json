@@ -59,6 +59,19 @@
       ]
     },
     {
+      "name": "FeatureExtension",
+      "extends": [
+        "bpmn:Task"
+      ],
+      "properties": [
+        {
+          "name": "featureExpression",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
       "name": "DataExpression",
       "extends": [
         "bpmn:DataOutputAssociation",
@@ -292,6 +305,11 @@
         },
         {
           "name": "variable",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "field",
           "isAttr": true,
           "type": "String"
         },

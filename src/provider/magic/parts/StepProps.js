@@ -2,13 +2,8 @@ import {
     isTextFieldEntryEdited, TextFieldEntry, ListGroup, ListItem
 } from '@bpmn-io/properties-panel';
 import { useService } from 'bpmn-js-properties-panel';
-import { isBasicType } from '../util';
+import { isBasicType, getDataParameters } from '../util';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
-// import hooks from the vendored preact package
-import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
-import stepDataRefListProps from './StepDataRefListProps';
-import StepDataRefListProps from './StepDataRefListProps';
-import { data } from 'jquery';
 export default function StepProps({ element, injector, translate }) {
 
     var inputData = [];
@@ -323,23 +318,4 @@ function getTypeDef(type, injector) {
         });
     });
     return typeDef;
-}
-
-function getDataParameters(source, elementRegistry) {
-    let dataParams = [];
-    source?.extensionElements?.values.map(function (extension) {
-        extension.values.map(function (p) {
-            dataParams.push(p);
-        });
-    });
-    if (source.linkedSupDataId !== undefined) {
-        var data = elementRegistry.get(source.linkedSupDataId);
-        getDataParameters(data?.businessObject, elementRegistry).map(p =>
-            dataParams.push(p));
-    } else if (source.linkedSupEventId !== undefined) {
-        data = elementRegistry.get(source.linkedSupEventId);
-        getDataParameters(data?.businessObject, elementRegistry).map(p =>
-            dataParams.push(p));
-    }
-    return dataParams;
 }
