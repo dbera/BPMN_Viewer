@@ -13,26 +13,26 @@ export default function StepProps({ element, injector, translate }) {
     const elementRegistry = injector.get('elementRegistry');
     element.businessObject.dataInputAssociations?.forEach(dataInput => {
         var source = dataInput.sourceRef[0];
-        if (source != undefined) {
-            getDataParameters(source, elementRegistry).map(p => inputData.push(p));
+        if (source !== undefined) {
+            getDataParameters(source, elementRegistry).forEach(p => inputData.push(p));
         }
     });
     element.businessObject.dataOutputAssociations?.forEach(dataOutput => {
         var target = dataOutput.targetRef;
-        if (target != undefined) {
-            getDataParameters(target, elementRegistry).map(p => outputData.push(p));
+        if (target !== undefined) {
+            getDataParameters(target, elementRegistry).forEach(p => outputData.push(p));
         }
     });
     element.businessObject.incoming?.forEach(dataInput => {
         var source = dataInput.sourceRef;
-        if (source != undefined) {
-            getDataParameters(source, elementRegistry).map(p => inputEventData.push(p));
+        if (source !== undefined) {
+            getDataParameters(source, elementRegistry).forEach(p => inputEventData.push(p));
         }
     });
     element.businessObject.outgoing?.forEach(dataOutput => {
         var target = dataOutput.targetRef;
-        if (target != undefined) {
-            getDataParameters(target, elementRegistry).map(p => outputEventData.push(p));
+        if (target !== undefined) {
+            getDataParameters(target, elementRegistry).forEach(p => outputEventData.push(p));
         }
     });
     return [
@@ -139,9 +139,7 @@ function StepInput(props) {
     let entries = [];
 
     if (subType.includes("Record")) {
-        getEntries(subType, id, injector).map(function (e) {
-            entries.push(e);
-        });
+        getEntries(subType, id, injector).forEach(e => entries.push(e));
     } else {
         entries = [
             {
@@ -165,9 +163,7 @@ function StepEventInput(props) {
     let entries = [];
 
     if (subType.includes("Record")) {
-        getEntries(subType, id, injector).map(function (e) {
-            entries.push(e);
-        });
+        getEntries(subType, id, injector).forEach(e => entries.push(e));
     } else {
         entries = [
             {
@@ -191,9 +187,7 @@ function StepOutput(props) {
     let entries = [];
 
     if (subType.includes("Record")) {
-        getEntries(subType, id, injector).map(function (e) {
-            entries.push(e);
-        });
+        getEntries(subType, id, injector).forEach(e => entries.push(e));
     } else {
         entries = [
             {
@@ -217,9 +211,7 @@ function StepEventOutput(props) {
     let entries = [];
 
     if (subType.includes("Record")) {
-        getEntries(subType, id, injector).map(function (e) {
-            entries.push(e);
-        });
+        getEntries(subType, id, injector).forEach(e => entries.push(e));
     } else {
         entries = [
             {
