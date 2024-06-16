@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import BpmnColorPickerModule from 'bpmn-js-color-picker';
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule
@@ -24,6 +25,7 @@ var bpmnModeler = new BpmnModeler({
     parent: '#js-properties-panel'
   },
   additionalModules: [
+    BpmnColorPickerModule,
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
     magicPropertiesProviderModule,
